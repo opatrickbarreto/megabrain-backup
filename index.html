@@ -339,7 +339,12 @@
       padding: 20px;
       text-align: center;
       position: relative;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background .2s, transform .2s;
     }
+    .krueger-stage:hover { background: rgba(255,255,255,0.04); transform: translateY(-2px); }
+    .krueger-stage.ks-active { background: rgba(245,158,11,0.08); }
     .krueger-stage:not(:last-child)::after {
       content: '→';
       position: absolute;
@@ -352,6 +357,31 @@
     .ks-emoji { font-size: 2.5rem; display: block; margin-bottom: 8px; }
     .ks-label { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
     .ks-desc { font-size: 0.85rem; color: var(--text); margin-top: 6px; }
+    .ks-hint { font-size: 0.7rem; color: var(--muted); margin-top: 8px; opacity: .5; }
+
+    /* Painel de detalhe do Krueger */
+    .ks-detail-panel {
+      margin-top: 24px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .4s ease, opacity .3s ease;
+      opacity: 0;
+    }
+    .ks-detail-panel.ks-panel-visible {
+      max-height: 300px;
+      opacity: 1;
+    }
+    .ks-detail-inner {
+      border-top: 1px solid rgba(245,158,11,0.2);
+      padding-top: 24px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .ks-detail-emoji { font-size: 2.5rem; line-height: 1; }
+    .ks-detail-title { font-weight: 800; font-size: 1rem; color: var(--gold2); margin-bottom: 6px; }
+    .ks-detail-text  { font-size: 0.92rem; color: var(--muted); line-height: 1.65; }
 
     /* ============================================================
        SECTION: POR QUE IA FALHA
@@ -1070,27 +1100,43 @@
           A maioria desiste ou se distrai. Os que persistem descobrem que existe sempre um próximo nível.
         </p>
         <div class="krueger-stages">
-          <div class="krueger-stage">
+          <div class="krueger-stage" data-nivel="1">
             <span class="ks-emoji">😎</span>
             <span class="ks-label">Nível 1</span>
             <div class="ks-desc">Curadoria — aprende com os melhores</div>
+            <div class="ks-hint">▼ clique para saber mais</div>
           </div>
-          <div class="krueger-stage">
+          <div class="krueger-stage" data-nivel="2">
             <span class="ks-emoji">📝</span>
             <span class="ks-label">Nível 2</span>
             <div class="ks-desc">Anotação — registra o conhecimento</div>
+            <div class="ks-hint">▼ clique para saber mais</div>
           </div>
-          <div class="krueger-stage">
+          <div class="krueger-stage" data-nivel="3">
             <span class="ks-emoji">🚀</span>
             <span class="ks-label">Nível 3</span>
             <div class="ks-desc">Aplicação — contrata, cria processos</div>
+            <div class="ks-hint">▼ clique para saber mais</div>
           </div>
-          <div class="krueger-stage">
+          <div class="krueger-stage" data-nivel="4">
             <span class="ks-emoji">🧠</span>
             <span class="ks-label" style="color:var(--gold2)">Nível 4</span>
             <div class="ks-desc" style="color:var(--gold2);font-weight:700">Sistema — Mega Brain entra aqui</div>
+            <div class="ks-hint">▼ clique para saber mais</div>
           </div>
         </div>
+
+        <!-- Painel de detalhe (aparece ao clicar) -->
+        <div class="ks-detail-panel" id="ks-panel">
+          <div class="ks-detail-inner">
+            <div class="ks-detail-emoji" id="ks-panel-emoji"></div>
+            <div>
+              <div class="ks-detail-title" id="ks-panel-title"></div>
+              <div class="ks-detail-text"  id="ks-panel-text"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -1692,6 +1738,59 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Krueger stages — click to reveal detail
+    const ksData = {
+      1: {
+        emoji: '😎',
+        title: 'Nível 1 — Curadoria',
+        text: 'Você começa consumindo os melhores conteúdos do mundo. Podcasts, palestras, livros, masterminds. Aprende com Hormozi sobre vendas, com Haynes sobre tráfego, com G4 sobre gestão. O problema: esse conhecimento fica preso na sua cabeça e não escala. Quando você para de estudar, o sistema para junto.'
+      },
+      2: {
+        emoji: '📝',
+        title: 'Nível 2 — Anotação',
+        text: 'Você começa a registrar o que aprende. Notas no Notion, planilhas, Google Docs, cadernos. O conhecimento sai da sua cabeça e vai para um sistema externo. Mas ainda é você que precisa consultar, lembrar onde está cada coisa e aplicar manualmente. O sistema não pensa por você — ele só guarda.'
+      },
+      3: {
+        emoji: '🚀',
+        title: 'Nível 3 — Aplicação',
+        text: 'Você contrata pessoas, cria processos, monta playbooks e SOPs. O conhecimento começa a escalar além de você. Mas agora o sistema depende de treinar pessoas, gerenciar alinhamento e manter a cultura. Cada saída de colaborador leva junto parte do conhecimento acumulado — e o ciclo recomeça.'
+      },
+      4: {
+        emoji: '🧠',
+        title: 'Nível 4 — Sistema (Mega Brain)',
+        text: 'O conhecimento vira código. Não depende de memória humana, não se perde com rotatividade, não fica desatualizado. O Mega Brain processa os 26 maiores experts do mundo, organiza em 5 camadas de DNA cognitivo e disponibiliza respostas operacionais com contexto total do seu negócio — em segundos. É aqui que a vantagem composta começa a trabalhar para você 24h por dia.'
+      }
+    };
+
+    let ksActive = null;
+    const ksPanel = document.getElementById('ks-panel');
+
+    document.querySelectorAll('.krueger-stage').forEach(stage => {
+      stage.addEventListener('click', () => {
+        const nivel = parseInt(stage.dataset.nivel);
+
+        // Toggle: clicar no mesmo fecha
+        if (ksActive === nivel) {
+          ksPanel.classList.remove('ks-panel-visible');
+          stage.classList.remove('ks-active');
+          ksActive = null;
+          return;
+        }
+
+        // Remove active de todos
+        document.querySelectorAll('.krueger-stage').forEach(s => s.classList.remove('ks-active'));
+
+        // Preenche e mostra painel
+        document.getElementById('ks-panel-emoji').textContent = ksData[nivel].emoji;
+        document.getElementById('ks-panel-title').textContent = ksData[nivel].title;
+        document.getElementById('ks-panel-text').textContent  = ksData[nivel].text;
+
+        stage.classList.add('ks-active');
+        ksPanel.classList.add('ks-panel-visible');
+        ksActive = nivel;
+      });
+    });
 
     // Nav active state
     const sections = document.querySelectorAll('section[id]');
