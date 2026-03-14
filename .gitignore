@@ -156,6 +156,9 @@ reference/README-RALPH-*.md
 
 # === DEVELOPMENT ARTIFACTS (not for distribution) ===
 docs/plans/
+# Blueprint TI Sarzedo - exceção para GitHub Pages
+!docs/plans/blueprint-ti-sarzedo-cliente.html
+!docs/plans/blueprint-ti-sarzedo-interno.html
 docs/validation/
 docs/checklists/
 docs/prd/

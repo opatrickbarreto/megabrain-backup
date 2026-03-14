@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gestão de Chamados de TI — Prefeitura de Sarzedo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --purple: #7c3aed;
+  --purple-light: #a855f7;
+  --cyan: #06b6d4;
+  --cyan-light: #22d3ee;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --bg: #07070f;
+  --bg2: #0d0d1a;
+  --bg3: #12122a;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --border: rgba(255,255,255,0.08);
+  --card-bg: rgba(255,255,255,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  font-size: 17px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.grad { background: linear-gradient(90deg, var(--purple-light), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grad-gold { background: linear-gradient(90deg, var(--gold), #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; opacity: 0.15; }
+
+@keyframes fadeInDown { from { opacity:0; transform:translateY(-30px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeInUp   { from { opacity:0; transform:translateY(30px);  } to { opacity:1; transform:translateY(0); } }
+@keyframes pulse  { 0%,100%{opacity:.15;transform:scale(1);} 50%{opacity:.25;transform:scale(1.05);} }
+@keyframes blink  { 0%,100%{opacity:1;} 50%{opacity:0;} }
+@keyframes float  { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+
+.reveal { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 32px 80px;
+  position: relative; overflow: hidden;
+}
+.hero .orb-1 { width:600px;height:600px;background:var(--purple);top:-200px;left:-150px;animation:pulse 6s ease-in-out infinite; }
+.hero .orb-2 { width:400px;height:400px;background:var(--cyan);bottom:-100px;right:-100px;animation:pulse 8s ease-in-out infinite 2s; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3);
+  padding: 10px 24px; border-radius: 100px;
+  font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--purple-light); margin-bottom: 36px;
+  animation: fadeInDown 0.6s ease;
+}
+.hero h1 {
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900; line-height: 1.05; margin-bottom: 28px;
+  animation: fadeInDown 0.7s ease 0.1s both;
+}
+.hero p {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  color: var(--muted); max-width: 640px; margin: 0 auto 52px;
+  animation: fadeInDown 0.7s ease 0.2s both;
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: 64px; flex-wrap: wrap;
+  margin-bottom: 52px; animation: fadeInUp 0.7s ease 0.3s both;
+}
+.stat .num   { font-size: 2.8rem; font-weight: 900; display: block; }
+.stat .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+.hero-cta { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; animation: fadeInUp 0.7s ease 0.4s both; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--purple), var(--purple-light));
+  color: white; padding: 16px 36px; border-radius: 14px;
+  font-weight: 700; font-size: 16px; text-decoration: none;
+  box-shadow: 0 0 30px rgba(124,58,237,0.4); transition: all 0.3s;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(124,58,237,0.6); }
+.btn-ghost {
+  background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+  color: var(--text); padding: 16px 36px; border-radius: 14px;
+  font-weight: 600; font-size: 16px; text-decoration: none;
+  transition: all 0.3s; backdrop-filter: blur(10px);
+}
+.btn-ghost:hover { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2); }
+
+/* ─── SECTIONS ─── */
+.section { padding: 110px 0; position: relative; }
+.section-badge {
+  display: inline-block;
+  background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2);
+  color: var(--purple-light); font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px;
+  padding: 7px 16px; border-radius: 100px; margin-bottom: 18px;
+}
+.section h2 { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 800; margin-bottom: 18px; line-height: 1.2; }
+.section-sub { font-size: 1.1rem; color: var(--muted); max-width: 580px; margin-bottom: 64px; }
+
+/* ─── DIAGNÓSTICO ─── */
+.diagnostico { background: var(--bg2); }
+.flow-container {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 0; margin-bottom: 64px;
+  padding: 44px; background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border); border-radius: 24px;
+}
+.flow-node { display:flex; flex-direction:column; align-items:center; gap:10px; padding:20px 18px; }
+.flow-node.bad  .node-icon-wrap { background:rgba(239,68,68,0.1);  border-color:rgba(239,68,68,0.3); }
+.flow-node.good .node-icon-wrap { background:rgba(16,185,129,0.1); border-color:rgba(16,185,129,0.3); }
+.node-icon-wrap {
+  width:68px; height:68px; border-radius:16px;
+  border:1px solid var(--border); background:rgba(255,255,255,0.05);
+  display:flex; align-items:center; justify-content:center; font-size:30px;
+}
+.flow-node .node-label { font-size: 14px; font-weight: 700; text-align:center; }
+.flow-node .node-desc  { font-size: 12px; color:var(--muted); text-align:center; }
+.flow-arrow      { font-size:22px; color:rgba(255,255,255,0.2); padding:0 6px; }
+.flow-arrow.good { color:rgba(16,185,129,0.6); }
+
+.problem-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; }
+.problem-card {
+  display:flex; gap:18px; align-items:flex-start; padding:22px;
+  background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); border-radius:18px;
+}
+.problem-card .p-icon { font-size:26px; flex-shrink:0; }
+.problem-card h4 { font-size: 16px; font-weight:700; color:#fca5a5; margin-bottom:5px; }
+.problem-card p  { font-size: 14px; color:var(--muted); }
+
+/* ─── SOLUÇÃO ─── */
+.solucao { background: var(--bg3); }
+.sites-grid { display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+.site-card { border-radius:24px; overflow:hidden; border:1px solid var(--border); transition:all 0.3s; }
+.site-card:hover { transform:translateY(-6px); box-shadow:0 30px 80px rgba(0,0,0,0.4); }
+.site-header { padding:40px; position:relative; overflow:hidden; }
+.site-header.azul  { background:linear-gradient(135deg,rgba(29,78,216,0.6),rgba(59,130,246,0.4));  border-bottom:1px solid rgba(59,130,246,0.2); }
+.site-header.verde { background:linear-gradient(135deg,rgba(5,150,105,0.6),rgba(16,185,129,0.4)); border-bottom:1px solid rgba(16,185,129,0.2); }
+.site-num   { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:2px; opacity:.6; margin-bottom:10px; }
+.site-header h3 { font-size:28px; font-weight:800; margin-bottom:10px; }
+.site-header p  { font-size:15px; opacity:.75; }
+.site-body  { padding:30px 40px; background:rgba(0,0,0,0.3); }
+.feature-item {
+  display:flex; gap:14px; padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size: 15px; color:var(--text); align-items:flex-start;
+}
+.feature-item:last-child { border:none; }
+.fdot-blue  { width:7px;height:7px;border-radius:50%;background:#60a5fa;margin-top:8px;flex-shrink:0; }
+.fdot-green { width:7px;height:7px;border-radius:50%;background:#34d399;margin-top:8px;flex-shrink:0; }
+
+/* ─── CATEGORIAS ─── */
+.cats { background: var(--bg); }
+.cats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; }
+.cat {
+  background:var(--card-bg); border:1px solid var(--border); border-radius:18px;
+  padding:22px 12px; text-align:center; transition:all 0.3s; cursor:default;
+}
+.cat:hover { border-color:rgba(124,58,237,0.4); background:rgba(124,58,237,0.08); transform:translateY(-3px); box-shadow:0 0 30px rgba(124,58,237,0.15); }
+.cat .c-icon { font-size:32px; margin-bottom:10px; display:block; }
+.cat .c-name { font-size:13px; font-weight:600; color:var(--muted); }
+
+/* ─── JORNADA ─── */
+.quiz { background: var(--bg2); }
+.steps-wrap {
+  display:flex; flex-direction:column; gap:0;
+  position:relative; max-width:760px; margin:0 auto;
+}
+.steps-wrap::before {
+  content:''; position:absolute; left:32px; top:64px; bottom:64px;
+  width:2px; background:linear-gradient(to bottom,var(--purple),var(--cyan)); opacity:.4;
+}
+.step { display:flex; gap:26px; padding:22px 0; }
+.step-num {
+  width:66px;height:66px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--purple-light));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;flex-shrink:0;
+  position:relative;z-index:1;
+  box-shadow:0 0 30px rgba(124,58,237,0.4);
+}
+.step-num.done { background:linear-gradient(135deg,var(--green),#059669); box-shadow:0 0 30px rgba(16,185,129,0.4); }
+.step-box {
+  flex:1; background:var(--card-bg); border:1px solid var(--border);
+  border-radius:20px; padding:24px 30px; backdrop-filter:blur(20px); transition:all 0.3s;
+}
+.step-box:hover { border-color:rgba(124,58,237,0.3); }
+.step-box h4 { font-size: 18px; font-weight:700; margin-bottom:8px; }
+.step-box p  { font-size: 15px; color:var(--muted); margin-bottom:14px; }
+.tags { display:flex; flex-wrap:wrap; gap:7px; }
+.tag {
+  background:rgba(124,58,237,0.12); border:1px solid rgba(124,58,237,0.2);
+  color:var(--purple-light); font-size:12px; font-weight:600;
+  padding:4px 12px; border-radius:100px;
+}
+.tag.cyan  { background:rgba(6,182,212,0.12);  border-color:rgba(6,182,212,0.2);  color:var(--cyan-light); }
+.tag.gold  { background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.2); color:var(--gold); }
+.tag.green { background:rgba(16,185,129,0.12); border-color:rgba(16,185,129,0.2); color:#34d399; }
+
+/* ─── SLA ─── */
+.sla-section { background: var(--bg3); }
+.sla-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+.sla-card {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:22px; padding:36px 26px; text-align:center;
+  transition:all 0.3s; position:relative; overflow:hidden;
+}
+.sla-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+.sla-card.p1::before { background:linear-gradient(90deg,#dc2626,#f87171); }
+.sla-card.p2::before { background:linear-gradient(90deg,#d97706,#fbbf24); }
+.sla-card.p3::before { background:linear-gradient(90deg,#059669,#34d399); }
+.sla-card.p4::before { background:linear-gradient(90deg,#475569,#94a3b8); }
+.sla-card:hover { transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+.sla-emoji { font-size:38px; margin-bottom:14px; display:block; }
+.sla-level { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; }
+.sla-time  { font-size:4rem; font-weight:900; margin-bottom:4px; line-height:1; }
+.sla-card.p1 .sla-time { color:#f87171; }
+.sla-card.p2 .sla-time { color:#fbbf24; }
+.sla-card.p3 .sla-time { color:#34d399; }
+.sla-card.p4 .sla-time { color:#94a3b8; }
+.sla-unit { font-size:14px; color:var(--muted); margin-bottom:18px; }
+.sla-examples { font-size:13px; color:#64748b; line-height:2; }
+
+/* ─── TECH ─── */
+.tech { background: var(--bg); }
+.tech-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.tech-card {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:22px; padding:32px; backdrop-filter:blur(20px);
+  transition:all 0.3s; position:relative; overflow:hidden;
+}
+.tech-card::after {
+  content:''; position:absolute; bottom:0;left:0;right:0; height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  opacity:0; transition:opacity 0.3s;
+}
+.tech-card:hover { transform:translateY(-4px); border-color:rgba(124,58,237,0.3); }
+.tech-card:hover::after { opacity:1; }
+.tech-icon { font-size:38px; margin-bottom:16px; display:block; }
+.tech-card h4     { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:4px; }
+.tech-name        { font-size:20px; font-weight:800; margin-bottom:12px; }
+.tech-card p      { font-size:15px; color:var(--muted); margin-bottom:16px; }
+.tech-badge {
+  display:inline-block; font-size:12px; font-weight:700;
+  padding:5px 14px; border-radius:100px;
+}
+.tech-badge.purple { background:rgba(124,58,237,0.15); border:1px solid rgba(124,58,237,0.3); color:var(--purple-light); }
+.tech-badge.cyan   { background:rgba(6,182,212,0.15);  border:1px solid rgba(6,182,212,0.3);  color:var(--cyan-light); }
+.tech-badge.green  { background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:#34d399; }
+
+/* ─── TIMELINE ─── */
+.timeline-sec { background: var(--bg2); }
+.timeline {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:0; position:relative; margin-top:20px;
+}
+.timeline::before {
+  content:''; position:absolute;
+  top:44px; left:10%; right:10%; height:2px;
+  background:linear-gradient(to right,var(--purple),var(--cyan)); opacity:.4;
+}
+.tl-item { display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; z-index:1; padding:0 8px; }
+.tl-dot {
+  width:90px;height:90px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px; margin-bottom:22px;
+  border:2px solid var(--border); background:var(--card-bg);
+  backdrop-filter:blur(20px); transition:all 0.3s;
+}
+.tl-dot:hover { border-color:var(--purple); box-shadow:0 0 30px rgba(124,58,237,0.3); transform:scale(1.05); }
+.tl-item h4    { font-size:15px; font-weight:800; margin-bottom:5px; }
+.tl-weeks      { font-size:12px; font-weight:700; color:var(--purple-light); margin-bottom:12px; }
+.tl-item ul    { list-style:none; }
+.tl-item ul li { font-size:13px; color:var(--muted); padding:3px 0; }
+
+/* ─── TRANSFORMAÇÃO (substitui custos) ─── */
+.transform { background: var(--bg3); }
+.transform-grid { display:grid; grid-template-columns:1fr 1fr; gap:26px; }
+.transform-card {
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:24px; overflow:hidden; backdrop-filter:blur(20px);
+}
+.transform-head {
+  padding:30px 36px; border-bottom:1px solid var(--border); position:relative; overflow:hidden;
+}
+.transform-head::before { content:''; position:absolute; inset:0; }
+.transform-head.red-theme::before    { background:linear-gradient(135deg,rgba(239,68,68,0.25),rgba(239,68,68,0.08)); }
+.transform-head.green-theme::before  { background:linear-gradient(135deg,rgba(16,185,129,0.25),rgba(6,182,212,0.08)); }
+.transform-head h3 { font-size:22px; font-weight:800; position:relative; z-index:1; margin-bottom:5px; }
+.transform-head p  { font-size:14px; color:var(--muted); position:relative; z-index:1; }
+.transform-body { padding:28px 36px; }
+.tr-row {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.tr-row:last-child { border:none; }
+.tr-row .tr-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+.tr-row .tr-text { font-size:15px; color:var(--text); }
+.tr-row .tr-text strong { color:white; display:block; font-size:14px; }
+.tr-row .tr-text span   { font-size:13px; color:var(--muted); }
+
+/* ─── TERMINAL ─── */
+.terminal-section { background:var(--bg2); padding:90px 0; }
+.terminal {
+  max-width:720px; margin:0 auto;
+  background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px; overflow:hidden; backdrop-filter:blur(20px);
+  box-shadow:0 0 60px rgba(124,58,237,0.2);
+}
+.terminal-bar {
+  padding:14px 18px; background:rgba(255,255,255,0.05);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex; gap:8px; align-items:center;
+}
+.dot-red    { width:13px;height:13px;border-radius:50%;background:#ef4444; }
+.dot-yellow { width:13px;height:13px;border-radius:50%;background:#f59e0b; }
+.dot-green  { width:13px;height:13px;border-radius:50%;background:#10b981; }
+.terminal-title { font-size:13px; color:var(--muted); margin-left:10px; font-family:'JetBrains Mono',monospace; }
+.terminal-body { padding:28px; font-family:'JetBrains Mono',monospace; font-size:14px; line-height:2.1; }
+.t-line   { display:flex; gap:12px; }
+.t-prompt { color:var(--purple-light); }
+.t-cmd    { color:var(--cyan-light); }
+.t-output { color:#34d399; padding-left:26px; }
+.t-muted  { color:#475569; padding-left:26px; }
+.cursor   { display:inline-block;width:9px;height:17px;background:var(--purple-light);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px; }
+
+/* ─── FOOTER ─── */
+footer {
+  background:rgba(0,0,0,0.6); border-top:1px solid var(--border);
+  padding:70px 0; text-align:center; backdrop-filter:blur(20px);
+}
+footer h3 { font-size:26px; font-weight:800; margin-bottom:10px; }
+footer p  { font-size:15px; color:var(--muted); margin-bottom:6px; }
+.footer-badge {
+  display:inline-block;
+  background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3);
+  color:#34d399; font-size:13px; font-weight:700;
+  padding:10px 24px; border-radius:100px; margin-bottom:24px;
+}
+
+@media (max-width:768px) {
+  .sites-grid,.transform-grid { grid-template-columns:1fr; }
+  .sla-grid { grid-template-columns:1fr 1fr; }
+  .tech-grid { grid-template-columns:1fr 1fr; }
+  .cats-grid { grid-template-columns:repeat(3,1fr); }
+  .timeline  { grid-template-columns:1fr; }
+  .timeline::before { display:none; }
+  .hero-stats { gap:32px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="container">
+    <div class="hero-badge">🏛️ Prefeitura de Sarzedo · Secretaria Municipal de TI</div>
+    <h1>Sistema de <span class="grad">Gestão de<br>Chamados</span> Técnicos</h1>
+    <p>Uma plataforma moderna que transforma o atendimento de TI municipal — do caos do WhatsApp a um sistema profissional com rastreabilidade total, SLAs definidos e métricas em tempo real.</p>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="num grad">2</span>
+        <span class="label">Portais Integrados</span>
+      </div>
+      <div class="stat">
+        <span class="num grad-gold">100%</span>
+        <span class="label">Rastreabilidade</span>
+      </div>
+      <div class="stat">
+        <span class="num" style="color:#34d399;">4</span>
+        <span class="label">SLAs Definidos</span>
+      </div>
+      <div class="stat">
+        <span class="num" style="color:#a855f7;">∞</span>
+        <span class="label">Escalável</span>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#solucao" class="btn-primary">🚀 Conhecer a Solução</a>
+      <a href="#fases" class="btn-ghost">📋 Ver o Roadmap</a>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGNÓSTICO -->
+<section class="section diagnostico" id="diagnostico">
+  <div class="container">
+    <div class="section-badge">01 · Diagnóstico</div>
+    <h2>O <span class="grad">cenário atual</span></h2>
+    <p class="section-sub">O fluxo de atendimento hoje é totalmente informal, sem rastreabilidade, sem priorização e sem dados para tomada de decisão.</p>
+
+    <div class="flow-container reveal">
+      <div class="flow-node bad">
+        <div class="node-icon-wrap">😤</div>
+        <div class="node-label">Servidor</div>
+        <div class="node-desc">reporta problema</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node bad">
+        <div class="node-icon-wrap">💬</div>
+        <div class="node-label">WhatsApp</div>
+        <div class="node-desc">canal informal</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node bad">
+        <div class="node-icon-wrap">👤</div>
+        <div class="node-label">Equipe TI</div>
+        <div class="node-desc">entrada manual</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node bad">
+        <div class="node-icon-wrap">📋</div>
+        <div class="node-label">Trello</div>
+        <div class="node-desc">gestão improvisada</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node bad">
+        <div class="node-icon-wrap">🤷</div>
+        <div class="node-label">Técnico</div>
+        <div class="node-desc">sem atribuição</div>
+      </div>
+    </div>
+
+    <div class="problem-grid reveal">
+      <div class="problem-card">
+        <span class="p-icon">🎰</span>
+        <div>
+          <h4>Sem atribuição inteligente</h4>
+          <p>Técnicos escolhem os próprios chamados, gerando desequilíbrio e falta de responsabilidade.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <span class="p-icon">🔥</span>
+        <div>
+          <h4>Sem critério de prioridade</h4>
+          <p>Qualquer chamado vira urgente. Não há SLA definido nem comprometimento com prazos.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <span class="p-icon">❓</span>
+        <div>
+          <h4>Equipamentos não identificados</h4>
+          <p>A equipe não sabe se o equipamento é alugado (BELMICRO, DUOTECH) ou da prefeitura — causando erros no acionamento.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <span class="p-icon">🕳️</span>
+        <div>
+          <h4>Zero histórico</h4>
+          <p>Chamados resolvidos desaparecem. Impossível identificar equipamentos problemáticos recorrentes.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <span class="p-icon">📊</span>
+        <div>
+          <h4>Nenhuma métrica disponível</h4>
+          <p>A gestão não sabe quantos chamados são abertos por mês, qual o tempo médio ou a produtividade da equipe.</p>
+        </div>
+      </div>
+      <div class="problem-card">
+        <span class="p-icon">⏱️</span>
+        <div>
+          <h4>Ausência de SLA</h4>
+          <p>O servidor não recebe estimativa de atendimento. A prefeitura não tem como cobrar prazos da equipe de TI.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUÇÃO -->
+<section class="section solucao" id="solucao">
+  <div class="container">
+    <div class="section-badge">02 · Solução</div>
+    <h2>A plataforma que vamos <span class="grad">implementar</span></h2>
+    <p class="section-sub">Dois portais web completamente integrados: um voltado ao servidor municipal, outro à equipe de TI — cada um otimizado para seu usuário.</p>
+
+    <div class="sites-grid reveal">
+      <div class="site-card">
+        <div class="site-header azul">
+          <div class="site-num">PORTAL 01 · ACESSO PÚBLICO</div>
+          <h3>Portal do Servidor</h3>
+          <p>Qualquer servidor municipal abre chamados em menos de 3 minutos — sem treinamento técnico necessário</p>
+        </div>
+        <div class="site-body">
+          <div class="feature-item"><span class="fdot-blue"></span>Fluxo guiado por quiz de categoria de equipamento</div>
+          <div class="feature-item"><span class="fdot-blue"></span>Formulários personalizados por tipo de problema</div>
+          <div class="feature-item"><span class="fdot-blue"></span>Identificação automática de equipamentos (rental vs patrimônio)</div>
+          <div class="feature-item"><span class="fdot-blue"></span>Protocolo de atendimento gerado instantaneamente</div>
+          <div class="feature-item"><span class="fdot-blue"></span>Atualizações em tempo real por WhatsApp</div>
+          <div class="feature-item"><span class="fdot-blue"></span>Consulta de chamado por número de protocolo</div>
+          <div class="feature-item"><span class="fdot-blue"></span>Avaliação do atendimento ao finalizar (NPS)</div>
+        </div>
+      </div>
+
+      <div class="site-card">
+        <div class="site-header verde">
+          <div class="site-num">PORTAL 02 · PAINEL INTERNO</div>
+          <h3>Dashboard da Equipe de TI</h3>
+          <p>Visão 360° de todos os chamados, com controle total de prioridades, prazos e performance</p>
+        </div>
+        <div class="site-body">
+          <div class="feature-item"><span class="fdot-green"></span>Fila de chamados com indicação visual de urgência (🔴🟡🟢)</div>
+          <div class="feature-item"><span class="fdot-green"></span>Atribuição automática inteligente — sem favoritismo</div>
+          <div class="feature-item"><span class="fdot-green"></span>Histórico completo do equipamento no mesmo chamado</div>
+          <div class="feature-item"><span class="fdot-green"></span>Contador de SLA em tempo real com alertas de vencimento</div>
+          <div class="feature-item"><span class="fdot-green"></span>Suporte a dois técnicos por chamado complexo</div>
+          <div class="feature-item"><span class="fdot-green"></span>Descrição obrigatória na resolução — rastreabilidade garantida</div>
+          <div class="feature-item"><span class="fdot-green"></span>Dashboard de performance individual e por período</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIAS -->
+<section class="section cats" id="categorias">
+  <div class="container">
+    <div class="section-badge">03 · Escopo de Atendimento</div>
+    <h2>Todos os ativos e sistemas da prefeitura <span class="grad">mapeados</span></h2>
+    <p class="section-sub">O sistema cobre todos os equipamentos, sistemas e demandas do município — incluindo os sistemas específicos de gestão pública.</p>
+
+    <div class="cats-grid reveal">
+      <div class="cat"><span class="c-icon">🖨️</span><span class="c-name">Impressora / Scanner</span></div>
+      <div class="cat"><span class="c-icon">💻</span><span class="c-name">Computador</span></div>
+      <div class="cat"><span class="c-icon">🖥️</span><span class="c-name">Monitor</span></div>
+      <div class="cat"><span class="c-icon">🌐</span><span class="c-name">Rede / Internet</span></div>
+      <div class="cat"><span class="c-icon">🖱️</span><span class="c-name">Periférico</span></div>
+      <div class="cat"><span class="c-icon">📧</span><span class="c-name">E-mail Institucional</span></div>
+      <div class="cat"><span class="c-icon">📁</span><span class="c-name">Pastas Compartilhadas</span></div>
+      <div class="cat"><span class="c-icon">📞</span><span class="c-name">Telefonia / VOIP</span></div>
+      <div class="cat"><span class="c-icon">⚙️</span><span class="c-name">Sistema Betha</span></div>
+      <div class="cat"><span class="c-icon">🏥</span><span class="c-name">CADSUS / Viver</span></div>
+      <div class="cat"><span class="c-icon">📐</span><span class="c-name">AutoCAD</span></div>
+      <div class="cat"><span class="c-icon">🔌</span><span class="c-name">Nobreak / Energia</span></div>
+      <div class="cat"><span class="c-icon">📄</span><span class="c-name">SEI / Outros Sistemas</span></div>
+      <div class="cat"><span class="c-icon">🔑</span><span class="c-name">Acesso / Senha</span></div>
+      <div class="cat"><span class="c-icon">➕</span><span class="c-name">Outras Demandas</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- JORNADA -->
+<section class="section quiz" id="jornada">
+  <div class="container">
+    <div class="section-badge">04 · Experiência do Usuário</div>
+    <h2>Chamado aberto em <span class="grad">menos de 3 minutos</span></h2>
+    <p class="section-sub">Do problema identificado ao protocolo gerado, o servidor é guiado passo a passo sem qualquer conhecimento técnico.</p>
+
+    <div class="steps-wrap reveal">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-box">
+          <h4>Identificação do Solicitante</h4>
+          <p>Nome, secretaria, localização e contato. Simples e rápido — sem criar cadastro ou senha.</p>
+          <div class="tags">
+            <span class="tag">Nome</span>
+            <span class="tag">Secretaria</span>
+            <span class="tag">Sala / Localização</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-box">
+          <h4>Seleção da Categoria</h4>
+          <p>Interface visual com ícones — o servidor clica no equipamento ou sistema com problema. Sem termos técnicos.</p>
+          <div class="tags">
+            <span class="tag">🖨️ Impressora</span>
+            <span class="tag">💻 Computador</span>
+            <span class="tag">⚙️ Sistema</span>
+            <span class="tag">📧 E-mail</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-box">
+          <h4>Formulário Inteligente</h4>
+          <p>Perguntas contextuais de acordo com a categoria selecionada. Para computadores: identificação automática do contrato de locação.</p>
+          <div class="tags">
+            <span class="tag gold">BELMICRO</span>
+            <span class="tag gold">DUOTECH</span>
+            <span class="tag gold">SMCiT</span>
+            <span class="tag gold">Patrimônio Prefeitura</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-box">
+          <h4>Protocolo Instantâneo</h4>
+          <p>Número de protocolo gerado. Confirmação automática via WhatsApp com número de protocolo e previsão de atendimento.</p>
+          <div class="tags">
+            <span class="tag cyan">#SAR-2026-00001</span>
+            <span class="tag green">Confirmação WhatsApp ✓</span>
+          </div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num done">✓</div>
+        <div class="step-box" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.04);">
+          <h4>Atendimento Rastreado + Avaliação</h4>
+          <p>O servidor acompanha o chamado em tempo real. Ao finalizar, avalia o atendimento — gerando dados de satisfação para a gestão.</p>
+          <div class="tags">
+            <span class="tag green">Acompanhamento em tempo real</span>
+            <span class="tag green">⭐ Índice de satisfação</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SLA -->
+<section class="section sla-section" id="sla">
+  <div class="container">
+    <div class="section-badge">05 · Níveis de Serviço</div>
+    <h2>SLAs definidos por <span class="grad">critério objetivo</span></h2>
+    <p class="section-sub">Cada chamado é classificado automaticamente com um prazo de atendimento claro — fim do "tudo é urgente".</p>
+
+    <div class="sla-grid reveal">
+      <div class="sla-card p1">
+        <span class="sla-emoji">🔴</span>
+        <div class="sla-level">P1 — Crítico</div>
+        <div class="sla-time">2h</div>
+        <div class="sla-unit">tempo máximo de atendimento</div>
+        <div class="sla-examples">Setor totalmente parado<br>Sistema crítico indisponível<br>Atendimento ao público comprometido</div>
+      </div>
+      <div class="sla-card p2">
+        <span class="sla-emoji">🟡</span>
+        <div class="sla-level">P2 — Alta</div>
+        <div class="sla-time">4h</div>
+        <div class="sla-unit">mesmo dia útil</div>
+        <div class="sla-examples">Servidor sem workstation<br>Impressora de setor parada<br>2 a 4 colaboradores afetados</div>
+      </div>
+      <div class="sla-card p3">
+        <span class="sla-emoji">🟢</span>
+        <div class="sla-level">P3 — Normal</div>
+        <div class="sla-time">1d</div>
+        <div class="sla-unit">próximo dia útil</div>
+        <div class="sla-examples">Lentidão sem impacto imediato<br>Periférico (mouse, teclado)<br>Instalação de software</div>
+      </div>
+      <div class="sla-card p4">
+        <span class="sla-emoji">⚪</span>
+        <div class="sla-level">P4 — Planejada</div>
+        <div class="sla-time">5d</div>
+        <div class="sla-unit">até 1 semana</div>
+        <div class="sla-examples">Melhorias e sugestões<br>Manutenção preventiva<br>Instalação de novo equipamento</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section tech" id="tecnologia">
+  <div class="container">
+    <div class="section-badge">06 · Infraestrutura</div>
+    <h2>Tecnologia <span class="grad">de ponta</span>, estável e segura</h2>
+    <p class="section-sub">Stack moderno utilizado pelas maiores empresas do mundo — com alta disponibilidade, segurança de dados e custo operacional mínimo para a prefeitura.</p>
+
+    <div class="tech-grid reveal">
+      <div class="tech-card">
+        <span class="tech-icon">⚛️</span>
+        <h4>Interface Web</h4>
+        <div class="tech-name">Next.js + Tailwind</div>
+        <p>Aplicação moderna, responsiva em qualquer dispositivo. Rápida para usuários com conexão limitada.</p>
+        <span class="tech-badge purple">Alta Performance</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">🗄️</span>
+        <h4>Banco de Dados</h4>
+        <div class="tech-name">PostgreSQL Gerenciado</div>
+        <p>Banco relacional robusto com backup automático, criptografia de dados e controle granular de acesso.</p>
+        <span class="tech-badge cyan">Backup Automático</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">🔐</span>
+        <h4>Segurança e Acesso</h4>
+        <div class="tech-name">Autenticação por Perfil</div>
+        <p>Servidores: acesso por matrícula funcional. Técnicos: e-mail + senha com autenticação em dois fatores opcional.</p>
+        <span class="tech-badge green">LGPD Compliant</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">💬</span>
+        <h4>Notificações</h4>
+        <div class="tech-name">WhatsApp + E-mail</div>
+        <p>Comunicação automática em cada etapa do chamado. Servidor sempre informado sem precisar acessar o sistema.</p>
+        <span class="tech-badge green">Tempo Real</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">🌐</span>
+        <h4>Hospedagem</h4>
+        <div class="tech-name">Cloud com Alta Disponibilidade</div>
+        <p>Infraestrutura em nuvem com 99.9% de uptime garantido. HTTPS e certificado de segurança incluídos.</p>
+        <span class="tech-badge purple">99.9% Uptime</span>
+      </div>
+      <div class="tech-card">
+        <span class="tech-icon">📊</span>
+        <h4>Relatórios</h4>
+        <div class="tech-name">Dashboard + Exportação</div>
+        <p>Relatórios automáticos diários, semanais e mensais em PDF e Excel para a gestão municipal.</p>
+        <span class="tech-badge cyan">PDF + Excel</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section timeline-sec" id="fases">
+  <div class="container">
+    <div class="section-badge">07 · Cronograma de Entrega</div>
+    <h2>Sistema operacional em <span class="grad">16 semanas</span></h2>
+    <p class="section-sub">5 fases com entregas incrementais — em cada etapa você vê e valida o que foi construído antes de avançar.</p>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-dot">🏗️</div>
+        <h4>FASE 0</h4>
+        <div class="tl-weeks">Semanas 1–2</div>
+        <ul>
+          <li>Configuração base</li>
+          <li>Banco de dados</li>
+          <li>Cadastros iniciais</li>
+          <li>Levantamento de dados</li>
+        </ul>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🌐</div>
+        <h4>FASE 1</h4>
+        <div class="tl-weeks">Semanas 3–5</div>
+        <ul>
+          <li>Portal do Servidor</li>
+          <li>Quiz de categorias</li>
+          <li>Protocolos</li>
+          <li>WhatsApp ativo</li>
+        </ul>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">📊</div>
+        <h4>FASE 2</h4>
+        <div class="tl-weeks">Semanas 6–8</div>
+        <ul>
+          <li>Dashboard TI</li>
+          <li>Auto-atribuição</li>
+          <li>SLA em tempo real</li>
+          <li>Notificações</li>
+        </ul>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">📦</div>
+        <h4>FASE 3</h4>
+        <div class="tl-weeks">Semanas 9–11</div>
+        <ul>
+          <li>Inventário</li>
+          <li>QR Codes</li>
+          <li>Histórico</li>
+          <li>Alertas contrato</li>
+        </ul>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">🚀</div>
+        <h4>FASE 4–5</h4>
+        <div class="tl-weeks">Semanas 12–16</div>
+        <ul>
+          <li>Analytics completo</li>
+          <li>Relatórios gestão</li>
+          <li>Treinamento equipe</li>
+          <li>Go-live! ✓</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSFORMAÇÃO (no lugar de custos) -->
+<section class="section transform" id="transformacao">
+  <div class="container">
+    <div class="section-badge">08 · Transformação</div>
+    <h2>O que muda no <span class="grad">dia a dia da prefeitura</span></h2>
+    <p class="section-sub">Não é só uma mudança de ferramenta — é uma transformação completa na forma como a TI da prefeitura opera e é percebida.</p>
+
+    <div class="transform-grid reveal">
+      <div class="transform-card">
+        <div class="transform-head red-theme">
+          <h3>❌ Como está hoje</h3>
+          <p>Realidade atual do atendimento de TI</p>
+        </div>
+        <div class="transform-body">
+          <div class="tr-row"><span class="tr-icon">📱</span><div class="tr-text"><strong>WhatsApp como canal oficial</strong><span>Mensagens perdidas, sem histórico, sem rastreabilidade</span></div></div>
+          <div class="tr-row"><span class="tr-icon">📋</span><div class="tr-text"><strong>Trello gerenciado manualmente</strong><span>Técnico cria os cards, escolhe o que quer atender</span></div></div>
+          <div class="tr-row"><span class="tr-icon">❓</span><div class="tr-text"><strong>Equipamentos sem identificação</strong><span>Ninguém sabe se é alugado ou patrimônio da prefeitura</span></div></div>
+          <div class="tr-row"><span class="tr-icon">📊</span><div class="tr-text"><strong>Zero dados para gestão</strong><span>Impossível saber volume, tempo ou satisfação real</span></div></div>
+          <div class="tr-row"><span class="tr-icon">😤</span><div class="tr-text"><strong>Servidor sem previsão</strong><span>Abre chamado e não sabe quando será atendido</span></div></div>
+        </div>
+      </div>
+
+      <div class="transform-card">
+        <div class="transform-head green-theme">
+          <h3>✅ Como ficará</h3>
+          <p>Realidade pós-implementação do sistema</p>
+        </div>
+        <div class="transform-body">
+          <div class="tr-row"><span class="tr-icon">💻</span><div class="tr-text"><strong>Portal estruturado com protocolo</strong><span>Todo chamado registrado, rastreado, com número de protocolo</span></div></div>
+          <div class="tr-row"><span class="tr-icon">🤖</span><div class="tr-text"><strong>Atribuição automática inteligente</strong><span>Sistema distribui chamados de forma justa e sem favoritismo</span></div></div>
+          <div class="tr-row"><span class="tr-icon">🏷️</span><div class="tr-text"><strong>Inventário completo com QR Code</strong><span>Cada equipamento identificado, com histórico e contrato visível</span></div></div>
+          <div class="tr-row"><span class="tr-icon">📈</span><div class="tr-text"><strong>Dashboard de performance em tempo real</strong><span>Volume, SLA, satisfação e produtividade por técnico</span></div></div>
+          <div class="tr-row"><span class="tr-icon">📲</span><div class="tr-text"><strong>Servidor informado em cada etapa</strong><span>WhatsApp automático: abertura, atribuição, resolução, avaliação</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMINAL -->
+<section class="terminal-section">
+  <div class="container" style="text-align:center;">
+    <div class="section-badge">09 · Próximo Passo</div>
+    <h2 style="margin-bottom:44px;">Pronto para <span class="grad">colocar em prática</span></h2>
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <div class="dot-red"></div>
+        <div class="dot-yellow"></div>
+        <div class="dot-green"></div>
+        <span class="terminal-title">sistema-ti-sarzedo · fase-0</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">sistema@sarzedo</span>&nbsp;<span class="t-cmd">$ iniciar implantação</span></div>
+        <div class="t-output">✓ Portal do Servidor — online</div>
+        <div class="t-output">✓ Dashboard da Equipe TI — online</div>
+        <div class="t-output">✓ Notificações WhatsApp — ativas</div>
+        <div class="t-output">✓ SLA e prioridades — configurados</div>
+        <div class="t-output">✓ Inventário de equipamentos — mapeado</div>
+        <div class="t-output">✓ Relatórios automáticos — ativos</div>
+        <div class="t-line" style="margin-top:10px;"><span class="t-prompt">sistema@sarzedo</span>&nbsp;<span class="t-cmd">$ status</span></div>
+        <div class="t-muted"># Prefeitura de Sarzedo — TI sob controle.</div>
+        <div class="t-line"><span class="t-prompt">sistema@sarzedo</span>&nbsp;<span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-badge">✅ Blueprint Aprovado · Pronto para Implementação</div>
+    <h3>🏛️ <span class="grad">Sistema de Gestão de Chamados</span></h3>
+    <p>Prefeitura de Sarzedo · Secretaria Municipal de Ciência e Inovação Tecnológica</p>
+    <p style="margin-top:10px;color:#1e293b;">v2.0 · 2026</p>
+  </div>
+</footer>
+
+<script>
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting)
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+const cards = '.problem-card,.cat,.tech-card,.sla-card,.tl-item';
+document.querySelectorAll(cards).forEach((el, i) => {
+  el.style.transitionDelay = `${i * 55}ms`;
+  el.classList.add('reveal');
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
