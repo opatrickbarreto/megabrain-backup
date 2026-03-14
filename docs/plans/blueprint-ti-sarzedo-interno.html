@@ -783,7 +783,8 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
           <div class="feature-item"><span class="feature-dot-blue"></span>Formulários específicos por tipo de problema</div>
           <div class="feature-item"><span class="feature-dot-blue"></span>Identificação automática de contrato (rental vs prefeitura)</div>
           <div class="feature-item"><span class="feature-dot-blue"></span>Número de protocolo gerado instantaneamente</div>
-          <div class="feature-item"><span class="feature-dot-blue"></span>Confirmação automática por WhatsApp</div>
+          <div class="feature-item"><span class="feature-dot-blue"></span>Confirmação automática por e-mail</div>
+          <div class="feature-item" style="opacity:0.5;"><span class="feature-dot-blue"></span>Confirmação por WhatsApp <span style="font-size:10px;color:var(--gold);">[Fase 2]</span></div>
           <div class="feature-item"><span class="feature-dot-blue"></span>Consulta de chamado por protocolo</div>
           <div class="feature-item"><span class="feature-dot-blue"></span>Avaliação do atendimento (⭐ NPS)</div>
         </div>
@@ -889,10 +890,11 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         <div class="step-num">4</div>
         <div class="step-box">
           <h4>Protocolo + Confirmação</h4>
-          <p>Número de protocolo gerado automaticamente. Servidor recebe mensagem de confirmação via WhatsApp na hora.</p>
+          <p>Número de protocolo gerado automaticamente. Servidor recebe confirmação por e-mail na hora. WhatsApp integrado na Fase 2.</p>
           <div class="tags">
             <span class="tag cyan">#SAR-2026-00001</span>
-            <span class="tag green">WhatsApp automático ✓</span>
+            <span class="tag green">E-mail automático ✓</span>
+            <span class="tag" style="background:rgba(245,158,11,0.1);color:var(--gold);border:1px solid rgba(245,158,11,0.3);">WhatsApp — Fase 2</span>
           </div>
         </div>
       </div>
@@ -901,7 +903,7 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         <div class="step-num done">✓</div>
         <div class="step-box" style="border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.04);">
           <h4>Atendimento + Avaliação</h4>
-          <p>Técnico atende. Servidor recebe updates por WhatsApp. Ao finalizar, avalia de 1 a 5 estrelas — alimentando o dashboard de performance.</p>
+          <p>Técnico atende. Servidor recebe updates por e-mail (e WhatsApp na Fase 2). Ao finalizar, avalia de 1 a 5 estrelas — alimentando o dashboard de performance.</p>
           <div class="tags">
             <span class="tag green">Updates em tempo real</span>
             <span class="tag green">⭐ Avaliação NPS</span>
@@ -971,8 +973,8 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         <span class="tech-icon">🗄️</span>
         <h4>Banco de Dados</h4>
         <div class="tech-name">Supabase PostgreSQL</div>
-        <p>Banco relacional gerenciado, com autenticação e segurança por linha de dados. Interface visual incluída.</p>
-        <span class="tech-badge cyan">Grátis até 500MB</span>
+        <p>Banco relacional gerenciado, com autenticação e segurança por linha de dados. Interface visual incluída. Uso estimado: ~54MB em 10 anos.</p>
+        <span class="tech-badge cyan">500MB grátis · uso real ~1%</span>
       </div>
       <div class="tech-card">
         <span class="tech-icon">🔐</span>
@@ -983,10 +985,10 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
       </div>
       <div class="tech-card">
         <span class="tech-icon">💬</span>
-        <h4>WhatsApp</h4>
+        <h4>WhatsApp <small style="font-size:10px;color:var(--gold);font-weight:700;margin-left:6px;">FASE 2</small></h4>
         <div class="tech-name">Evolution API</div>
-        <p>Notificações automáticas: abertura, atribuição, resolução. Open-source e sem custo de licença.</p>
-        <span class="tech-badge green">Open-source</span>
+        <p>Notificações via WhatsApp: abertura, atribuição, resolução. Implementado após validação da adoção do portal.</p>
+        <span class="tech-badge" style="background:rgba(245,158,11,0.15);color:var(--gold);border-color:rgba(245,158,11,0.3);">Opcional — Fase 2</span>
       </div>
       <div class="tech-card">
         <span class="tech-icon">🌐</span>
@@ -999,8 +1001,8 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         <span class="tech-icon">📧</span>
         <h4>E-mail</h4>
         <div class="tech-name">Resend</div>
-        <p>Relatórios automáticos, alertas de SLA e notificações por e-mail. 3.000 e-mails/mês gratuitos.</p>
-        <span class="tech-badge cyan">3k/mês grátis</span>
+        <p>Relatórios automáticos, alertas de SLA e notificações por e-mail. Uso estimado: ~500 emails/mês (17% do limite gratuito).</p>
+        <span class="tech-badge cyan">3k/mês grátis · uso real 17%</span>
       </div>
     </div>
   </div>
@@ -1032,8 +1034,8 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         <ul>
           <li>Site 1 MVP</li>
           <li>Quiz completo</li>
-          <li>WhatsApp</li>
           <li>Protocolo</li>
+          <li>Notificações e-mail</li>
         </ul>
       </div>
       <div class="tl-item">
@@ -1078,7 +1080,7 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
   <div class="container">
     <div class="section-badge">08 · Investimento</div>
     <h2>Custo <span class="grad">real do projeto</span></h2>
-    <p class="section-sub">Tecnologia de ponta com custo de operação próximo de zero. O investimento principal é o tempo de desenvolvimento — que será feito por JARVIS.</p>
+    <p class="section-sub">Custo operacional do MVP: <strong style="color:var(--cyan);">~R$ 4/mês</strong> (apenas domínio). WhatsApp via Evolution API é estratégia de Fase 2 — implementado somente se a adoção do portal for insatisfatória após 30-60 dias. Supabase comporta 10+ anos de dados dentro do free tier.</p>
 
     <div class="custos-grid reveal">
       <div class="custo-card">
@@ -1104,13 +1106,13 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         </div>
         <div class="custo-body">
           <div class="custo-row"><span class="item">Vercel (hospedagem)</span><span class="val">R$ 0</span></div>
-          <div class="custo-row"><span class="item">Supabase (banco de dados)</span><span class="val">R$ 0</span></div>
+          <div class="custo-row"><span class="item">Supabase (banco + auth)</span><span class="val">R$ 0</span></div>
           <div class="custo-row"><span class="item">Resend (e-mails)</span><span class="val">R$ 0</span></div>
-          <div class="custo-row"><span class="item">Evolution API (WhatsApp)</span><span class="val">~R$ 50</span></div>
-          <div class="custo-row"><span class="item">VPS para WhatsApp</span><span class="val">~R$ 40</span></div>
+          <div class="custo-row"><span class="item">Domínio (.com.br)</span><span class="val">~R$ 4/mês</span></div>
+          <div class="custo-row" style="opacity:0.5;"><span class="item">Evolution API + VPS <span style="font-size:10px;color:var(--gold);">[Fase 2 — opcional]</span></span><span class="val" style="color:var(--gold);">~R$ 90</span></div>
           <div class="custo-total">
-            <span class="item">💰 Total mensal</span>
-            <span class="val">~R$ 90/mês</span>
+            <span class="item">💰 Total mensal (MVP)</span>
+            <span class="val">~R$ 4/mês</span>
           </div>
         </div>
       </div>
@@ -1166,7 +1168,8 @@ footer p { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
         <div class="t-line" style="margin-top:8px;"><span class="t-prompt">jarvis@sarzedo</span>&nbsp;<span class="t-cmd">$ iniciar fase-1</span></div>
         <div class="t-output">✓ Site 1 — Portal do Servidor online</div>
         <div class="t-output">✓ Quiz de categorias ativo</div>
-        <div class="t-output">✓ WhatsApp API conectada</div>
+        <div class="t-output">✓ Notificações por e-mail ativas</div>
+        <div class="t-output" style="opacity:0.5;">⏳ WhatsApp API — agendado para Fase 2</div>
         <div class="t-line" style="margin-top:8px;"><span class="t-prompt">jarvis@sarzedo</span>&nbsp;<span class="t-cmd">$ status</span></div>
         <div class="t-muted"># aguardando aprovação do senhor para iniciar...</div>
         <div class="t-line"><span class="t-prompt">jarvis@sarzedo</span>&nbsp;<span class="cursor"></span></div>
